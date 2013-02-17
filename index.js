@@ -18,6 +18,16 @@ module.exports = function (src) {
         }
     });
     
+    falafel(String(src), function (node) {
+        if (node.type === 'Identifier'
+        && lookup(node) === undefined) {
+            if (node.parent.type === 'MemberExpression'
+            && node.parent.property === node) return;
+            
+            globals[node.name] = true;
+        }
+    });
+    
     return { locals: locals, globals: globals };
     
     function lookup (node) {
