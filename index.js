@@ -12,6 +12,10 @@ module.exports = function (src) {
                 locals[id][d.id.name] = d;
             });
         }
+        else if (node.type === 'FunctionDeclaration') {
+            var id = getScope(node.parent);
+            locals[id][node.id.name] = node;
+        }
     });
     
     return { locals: locals, globals: globals };

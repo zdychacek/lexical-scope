@@ -10,6 +10,9 @@ foo(function () {
         x += 10;
         x.zzzzzz;
     });
+    function doom () {
+    }
+
 });
 
 console.log(xyz);
