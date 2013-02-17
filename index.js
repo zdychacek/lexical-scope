@@ -24,6 +24,8 @@ module.exports = function (src) {
             if (node.parent.type === 'MemberExpression'
             && node.parent.property === node) return;
             
+            if (isFunction(node.parent)) return;
+            
             globals[node.name] = true;
         }
     });
