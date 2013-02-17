@@ -2,7 +2,8 @@ var falafel = require('falafel');
 
 module.exports = function (src) {
     var locals = {};
-    var globals = {};
+    var implicit = {};
+    var exported = {};
     
     falafel(String(src), function (node) {
         if (node.type === 'VariableDeclaration') {
@@ -26,11 +27,22 @@ module.exports = function (src) {
             
             if (isFunction(node.parent)) return;
             
-            globals[node.name] = true;
+            if (node.parent.type === 'AssignmentExpression') {
+                exported[node.name] = true;
+            }
+            if (!exported[node.name]) {
+                implicit[node.name] = true;
+            }
         }
     });
     
-    return { locals: locals, globals: globals };
+    return {
+        locals: locals,
+        globals: {
+            implicit: Object.keys(implicit),
+            exported: Object.keys(exported)
+        }
+    };
     
     function lookup (node) {
         for (var p = node; p; p = p.parent) {

@@ -4,4 +4,4 @@ var src = fs.readFileSync(__dirname + '/src.js');
 
 var scope = detect(src);
 console.dir(scope.globals);
-console.dir(scope.locals);
+//console.dir(scope.locals);
