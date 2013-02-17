@@ -28,16 +28,20 @@ module.exports = function (src) {
             if (isFunction(node.parent)) return;
             
             if (node.parent.type === 'AssignmentExpression') {
-                exported[node.name] = true;
+                exported[node.name] = keyOf(node).length;
             }
-            if (!exported[node.name]) {
-                implicit[node.name] = true;
+            if (!exported[node.name]
+            || exported[node.name] < keyOf(node).length) {
+                implicit[node.name] = keyOf(node).length;
             }
         }
     });
     
     return {
-        locals: locals,
+        locals: Object.keys(locals).reduce(function (acc, key) {
+            acc[key] = Object.keys(locals[key]);
+            return acc;
+        }, {}),
         globals: {
             implicit: Object.keys(implicit),
             exported: Object.keys(exported)
