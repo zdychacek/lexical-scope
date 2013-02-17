@@ -1,0 +1,37 @@
+{
+    "name": "lexical-scope",
+    "version": "0.0.0",
+    "description": "detect global and local lexical identifiers from javascript source code",
+    "main": "index.js",
+    "dependencies": {
+        "falafel": "~0.1.4"
+    },
+    "devDependencies": {
+        "tap": "~0.4.0",
+        "tape": "~0.2.2"
+    },
+    "scripts": {
+        "test": "tap test/*.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/substack/lexical-scope.git"
+    },
+    "homepage": "https://github.com/substack/lexical-scope",
+    "keywords": [
+        "ast",
+        "variable",
+        "name",
+        "lexical",
+        "local",
+        "global",
+        "implicit",
+        "exported"
+    ],
+    "author": {
+        "name": "James Halliday",
+        "email": "mail@substack.net",
+        "url": "http://substack.net"
+    },
+    "license": "MIT"
+}
