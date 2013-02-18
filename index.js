@@ -9,9 +9,10 @@ module.exports = function (src) {
         if (node.type === 'VariableDeclaration') {
             // take off the leading `var `
             var id = getScope(node);
-            node.declarations.forEach(function (d) {
+            for (var i = 0; i < node.declarations.length; i++) {
+                var d = node.declarations[i];
                 locals[id][d.id.name] = d;
-            });
+            }
         }
         else if (node.type === 'FunctionDeclaration') {
             var id = getScope(node.parent);
@@ -37,14 +38,18 @@ module.exports = function (src) {
         }
     });
     
+    var localScopes = {};
+    var lks = objectKeys(locals);
+    for (var i = 0; i < lks.length; i++) {
+        var key = lks[i];
+        localScopes[key] = objectKeys(locals[key]);
+    }
+    
     return {
-        locals: Object.keys(locals).reduce(function (acc, key) {
-            acc[key] = Object.keys(locals[key]);
-            return acc;
-        }, {}),
+        locals: localScopes,
         globals: {
-            implicit: Object.keys(implicit),
-            exported: Object.keys(exported)
+            implicit: objectKeys(implicit),
+            exported: objectKeys(exported)
         }
     };
     
@@ -95,29 +100,41 @@ function idOf (node) {
 
 function keyOf (node) {
     var p = node.parent;
-    var kv = Object.keys(p)
-        .reduce(function (acc, key) {
-            acc.keys.push(key);
-            acc.values.push(p[key]);
-            acc.top.push(undefined);
+    var ks = objectKeys(p);
+    var kv = { keys : [], values : [], top : [] };
+    
+    for (var i = 0; i < ks.length; i++) {
+        var key = ks[i];
+        kv.keys.push(key);
+        kv.values.push(p[key]);
+        kv.top.push(undefined);
+        
+        if (isArray(p[key])) {
+            var keys = objectKeys(p[key]);
+            kv.keys.push.apply(kv.keys, keys);
+            kv.values.push.apply(kv.values, p[key]);
             
-            if (Array.isArray(p[key])) {
-                var keys = Object.keys(p[key]);
-                acc.keys.push.apply(acc.keys, keys);
-                acc.values.push.apply(acc.values, p[key]);
-                acc.top.push.apply(
-                    acc.top,
-                    keys.map(function () { return key })
-                );
-            }
-            
-            return acc;
-        }, { keys : [], values : [], top : [] })
-    ;
+            var nkeys = [];
+            for (var j = 0; j < keys.length; j++) nkeys.push(key);
+            kv.top.push.apply(kv.top, nkeys);
+        }
+    }
     var ix = kv.values.indexOf(node);
-    var res = [ kv.top[ix], kv.keys[ix] ].filter(Boolean);
+    var res = [];
+    if (kv.top[ix]) res.push(kv.top[ix]);
+    if (kv.keys[ix]) res.push(kv.keys[ix]);
     if (node.parent.type === 'CallExpression') {
         res.unshift.apply(res, keyOf(node.parent.parent));
     }
     return res;
 }
+
+var isArray = Array.isArray || function (xs) {
+    return Object.prototype.toString.call(xs) === '[object Array]';
+};
+
+var objectKeys = Object.keys || function (obj) {
+    var keys = [];
+    for (var key in obj) keys.push(key);
+    return keys;
+};
