@@ -2,6 +2,8 @@
 
 detect global and local lexical identifiers from javascript source code
 
+[![browser support](http://ci.testling.com/substack/lexical-scope.png)](http://ci.testling.com/substack/lexical-scope)
+
 [![build status](https://secure.travis-ci.org/substack/lexical-scope.png)](http://travis-ci.org/substack/lexical-scope)
 
 # example
