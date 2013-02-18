@@ -2,6 +2,8 @@
 
 detect global and local lexical identifiers from javascript source code
 
+[![build status](https://secure.travis-ci.org/substack/lexical-scope.png)](http://travis-ci.org/substack/lexical-scope)
+
 # example
 
 ``` js
