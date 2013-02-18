@@ -119,7 +119,7 @@ function keyOf (node) {
             kv.top.push.apply(kv.top, nkeys);
         }
     }
-    var ix = kv.values.indexOf(node);
+    var ix = indexOf(kv.values, node);
     var res = [];
     if (kv.top[ix]) res.push(kv.top[ix]);
     if (kv.keys[ix]) res.push(kv.keys[ix]);
@@ -138,3 +138,11 @@ var objectKeys = Object.keys || function (obj) {
     for (var key in obj) keys.push(key);
     return keys;
 };
+
+function indexOf (xs, x) {
+    if (xs.indexOf) return xs.indexOf(x);
+    for (var i = 0; i < xs.length; i++) {
+        if (x === xs[i]) return i;
+    }
+    return -1;
+}
