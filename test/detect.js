@@ -1,6 +1,6 @@
 var test = require('tape');
 var detect = require('../');
-var src = require('./sources/detect_source.js');
+var src = require('./sources/detect.js');
 
 test('check locals and globals', function (t) {
     t.plan(3);
