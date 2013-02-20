@@ -29,7 +29,13 @@ module.exports = function (src) {
             if (isFunction(node.parent)) return;
             
             if (node.parent.type === 'AssignmentExpression') {
-                exported[node.name] = keyOf(node).length;
+                var isLeft0 = node.parent.left.type === 'MemberExpression'
+                    && node.parent.left.object === node.name
+                ;
+                var isLeft1 = node.parent.left.type === 'Identifier';
+                if (isLeft0 || isLeft1) {
+                    exported[node.name] = keyOf(node).length;
+                }
             }
             if (!exported[node.name]
             || exported[node.name] < keyOf(node).length) {
