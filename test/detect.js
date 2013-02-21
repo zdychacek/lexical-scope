@@ -7,7 +7,7 @@ test('check locals and globals', function (t) {
     
     var scope = detect(src);
     t.same(scope.globals.implicit, [
-        'w', 'foo', 'process', 'console', 'xyz'
+        'w', 'foo', 'process', 'console', 'AAA', 'BBB', 'CCC', 'xyz'
     ]);
     t.same(scope.globals.exported, [
         'w', 'RAWR', 'BLARG', 'ZZZ'

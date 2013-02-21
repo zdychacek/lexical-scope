@@ -19,6 +19,9 @@ foo(function () {
         ZZZ=6;
     });
     function doom () {
+        if (AAA.aaa) {}
+        BBB.bbb = 3;
+        var z = 2 + CCC.x * 5;
     }
     ZZZ.foo();
 
