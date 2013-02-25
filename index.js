@@ -5,7 +5,9 @@ module.exports = function (src) {
     var implicit = {};
     var exported = {};
     
-    falafel(String(src), function (node) {
+    src = String(src).replace(/^#![^\n]*\n/, '');
+    
+    falafel(src, function (node) {
         if (node.type === 'VariableDeclaration') {
             // take off the leading `var `
             var id = getScope(node);
@@ -20,7 +22,7 @@ module.exports = function (src) {
         }
     });
     
-    falafel(String(src), function (node) {
+    falafel(src, function (node) {
         if (node.type === 'Identifier'
         && lookup(node) === undefined) {
             if (node.parent.type === 'MemberExpression'
