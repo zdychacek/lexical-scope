@@ -1,4 +1,4 @@
-var esprima = require('esprima');
+var astw = require('astw');
 
 module.exports = function (src) {
     var locals = {};
@@ -6,9 +6,9 @@ module.exports = function (src) {
     var exported = {};
     
     src = String(src).replace(/^#![^\n]*\n/, '');
-    var ast = esprima.parse(src);
+    var walk = astw(src);
     
-    walk(ast, undefined, function (node) {
+    walk(function (node) {
         if (node.type === 'VariableDeclaration') {
             // take off the leading `var `
             var id = getScope(node);
@@ -23,7 +23,7 @@ module.exports = function (src) {
         }
     });
     
-    walk(ast, undefined, function (node) {
+    walk(function (node) {
         if (node.type === 'Identifier'
         && lookup(node) === undefined) {
             if (node.parent.type === 'MemberExpression'
@@ -154,25 +154,4 @@ function indexOf (xs, x) {
         if (x === xs[i]) return i;
     }
     return -1;
-}
-
-function walk (node, parent, cb) {
-    objectKeys(node).forEach(function (key) {
-        if (key === 'parent') return;
-        
-        var child = node[key];
-        if (isArray(child)) {
-            child.forEach(function (c) {
-                if (c && typeof c.type === 'string') {
-                    c.parent = node;
-                    walk(c, node, cb);
-                }
-            });
-        }
-        else if (child && typeof child.type === 'string') {
-            child.parent = node;
-            walk(child, node, cb);
-        }
-    });
-    cb(node);
 }
