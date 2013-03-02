@@ -1,4 +1,4 @@
-var falafel = require('falafel');
+var esprima = require('esprima');
 
 module.exports = function (src) {
     var locals = {};
@@ -6,8 +6,9 @@ module.exports = function (src) {
     var exported = {};
     
     src = String(src).replace(/^#![^\n]*\n/, '');
+    var ast = esprima.parse(src);
     
-    falafel(src, function (node) {
+    walk(ast, undefined, function (node) {
         if (node.type === 'VariableDeclaration') {
             // take off the leading `var `
             var id = getScope(node);
@@ -22,7 +23,7 @@ module.exports = function (src) {
         }
     });
     
-    falafel(src, function (node) {
+    walk(ast, undefined, function (node) {
         if (node.type === 'Identifier'
         && lookup(node) === undefined) {
             if (node.parent.type === 'MemberExpression'
@@ -153,4 +154,25 @@ function indexOf (xs, x) {
         if (x === xs[i]) return i;
     }
     return -1;
+}
+
+function walk (node, parent, cb) {
+    Object.keys(node).forEach(function (key) {
+        if (key === 'parent') return;
+        
+        var child = node[key];
+        if (Array.isArray(child)) {
+            child.forEach(function (c) {
+                if (c && typeof c.type === 'string') {
+                    c.parent = node;
+                    walk(c, node, cb);
+                }
+            });
+        }
+        else if (child && typeof child.type === 'string') {
+            child.parent = node;
+            walk(child, node, cb);
+        }
+    });
+    cb(node);
 }
