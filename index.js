@@ -157,11 +157,11 @@ function indexOf (xs, x) {
 }
 
 function walk (node, parent, cb) {
-    Object.keys(node).forEach(function (key) {
+    objectKeys(node).forEach(function (key) {
         if (key === 'parent') return;
         
         var child = node[key];
-        if (Array.isArray(child)) {
+        if (isArray(child)) {
             child.forEach(function (c) {
                 if (c && typeof c.type === 'string') {
                     c.parent = node;
