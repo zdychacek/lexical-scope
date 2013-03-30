@@ -1,4 +1,5 @@
 var astw = require('astw');
+var deparse = require('escodegen').generate;
 
 module.exports = function (src) {
     var locals = {};
@@ -17,9 +18,15 @@ module.exports = function (src) {
                 locals[id][d.id.name] = d;
             }
         }
-        else if (node.type === 'FunctionDeclaration') {
+        else if (isFunction(node)) {
             var id = getScope(node.parent);
-            locals[id][node.id.name] = node;
+            if (node.id) locals[id][node.id.name] = node;
+            var nid = node.params.length && getScope(node);
+            if (nid && !locals[nid]) locals[nid] = {};
+            for (var i = 0; i < node.params.length; i++) {
+                var p = node.params[i];
+                locals[nid][p.name] = p;
+            }
         }
     });
     
