@@ -1,5 +1,4 @@
 var astw = require('astw');
-var deparse = require('escodegen').generate;
 
 module.exports = function (src) {
     var locals = {};
