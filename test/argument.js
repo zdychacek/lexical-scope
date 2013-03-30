@@ -1,6 +1,7 @@
 var test = require('tape');
 var detect = require('../');
-var src = require('./sources/argument.js');
+var fs = require('fs');
+var src = fs.readFileSync(__dirname + '/files/argument.js');
 
 test('parameters from inline arguments', function (t) {
     t.plan(3);
