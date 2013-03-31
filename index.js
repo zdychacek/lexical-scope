@@ -42,7 +42,9 @@ module.exports = function (src) {
                 var isLeft0 = node.parent.left.type === 'MemberExpression'
                     && node.parent.left.object === node.name
                 ;
-                var isLeft1 = node.parent.left.type === 'Identifier';
+                var isLeft1 = node.parent.left.type === 'Identifier'
+                    && node.parent.left.name === node.name
+                ;
                 if (isLeft0 || isLeft1) {
                     exported[node.name] = keyOf(node).length;
                 }
