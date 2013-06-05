@@ -8,8 +8,7 @@
     },
     "devDependencies": {
         "tap": "~0.4.0",
-        "tape": "~0.2.2",
-        "browserify": "~2.10.2",
+        "tape": "~0.3.3",
         "brfs": "~0.0.3"
     },
     "scripts": {
