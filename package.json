@@ -1,6 +1,6 @@
 {
     "name": "lexical-scope",
-    "version": "0.0.13",
+    "version": "0.0.14",
     "description": "detect global and local lexical identifiers from javascript source code",
     "main": "index.js",
     "browserify": { "transform": [ "brfs" ] },
