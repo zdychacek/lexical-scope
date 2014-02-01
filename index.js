@@ -8,6 +8,10 @@ module.exports = function (src) {
     if (typeof src === 'string') {
         src = String(src).replace(/^#![^\n]*\n/, '');
     }
+    if (src && typeof src === 'object'
+    && typeof src.copy === 'function' && typeof src.toString === 'function') {
+        src = src.toString('utf8');
+    }
     var walk = astw(src);
     
     walk(function (node) {
