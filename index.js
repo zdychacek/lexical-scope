@@ -5,7 +5,9 @@ module.exports = function (src) {
     var implicit = {};
     var exported = {};
     
-    src = String(src).replace(/^#![^\n]*\n/, '');
+    if (typeof src === 'string') {
+        src = String(src).replace(/^#![^\n]*\n/, '');
+    }
     var walk = astw(src);
     
     walk(function (node) {
