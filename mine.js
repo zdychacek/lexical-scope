@@ -8,10 +8,10 @@ function mine (js) {
     var quote;
     var name;
     var start;
-
+    
     var isIdent = /[a-z0-9_.]/i;
     var isWhitespace = /[ \r\n\t]/;
-
+    
     function $start (char) {
         if (char === "/") {
             return $slash;
