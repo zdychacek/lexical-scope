@@ -4,7 +4,7 @@
   "description": "detect global and local lexical identifiers from javascript source code",
   "main": "index.js",
   "dependencies": {
-    "astw": "~1.1.0"
+    "astw": "^2.0.0"
   },
   "devDependencies": {
     "tape": "~2.4.1",
