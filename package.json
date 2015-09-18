@@ -1,6 +1,6 @@
 {
   "name": "lexical-scope",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "detect global and local lexical identifiers from javascript source code",
   "main": "index.js",
   "dependencies": {
