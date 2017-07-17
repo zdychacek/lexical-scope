@@ -1,15 +1,13 @@
 # lexical-scope
 
-detect global and local lexical identifiers from javascript source code
+*This is a fork of [`lexical-scope`](https://www.npmjs.com/package/insert-module-globals) which uses [Babylon](https://github.com/babel/babylon) parser instead of [`acorn`](https://www.npmjs.com/package/acorn).*
 
-[![browser support](http://ci.testling.com/substack/lexical-scope.png)](http://ci.testling.com/substack/lexical-scope)
-
-[![build status](https://secure.travis-ci.org/substack/lexical-scope.png)](http://travis-ci.org/substack/lexical-scope)
+Detects global and local lexical identifiers from javascript source code.
 
 # example
 
 ``` js
-var detect = require('lexical-scope');
+var detect = require('@zdychacek/lexical-scope');
 var fs = require('fs');
 var src = fs.readFileSync(__dirname + '/src.js');
 
@@ -112,10 +110,10 @@ If you are using a modern browser, you can go to http://lexical-scope.forbeslind
 # methods
 
 ``` js
-var detect = require('lexical-scope')
+var detect = require('@zdychacek/lexical-scope')
 ```
 
-## var scope = detect(src)
+## var scope = detect(src, opts)
 
 Return a `scope` structure from a javascript source string `src`.
 
@@ -135,12 +133,14 @@ names that have been used. There are two special implicit property names:
 * `"*"` - when an implicit variable has been used in a context that is not a
 property and not a call
 
+You cas pass list of plugins for underlying Babylon parser via `opts.parserPlugins` option.
+
 # install
 
 With [npm](https://npmjs.org) do:
 
 ```
-npm install lexical-scope
+npm install @zdychacek/lexical-scope
 ```
 
 # license
