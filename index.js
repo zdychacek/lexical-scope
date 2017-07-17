@@ -30,7 +30,11 @@ module.exports = function (src, opts) {
             var id = getScope(node);
             locals[id][node.param.name] = node.param
         }
-        else if (isFunction(node)) {
+        else if (node.type === 'ClassDeclaration') {
+            var id = getScope(node);
+            locals[id][node.id.name] = node.id
+        }
+        else if (isScope(node)) {
             var id = getScope(node.parent);
             if (node.id) locals[id][node.id.name] = node;
             var nid = node.params.length && getScope(node);
@@ -51,7 +55,7 @@ module.exports = function (src, opts) {
 
             if (node.parent.type === 'MemberExpression' && node.parent.property === node) return;
 
-            if (isFunction(node.parent)) return;
+            if (isScope(node.parent)) return;
 
             if (node.parent.type === 'LabeledStatement') return;
 
@@ -113,7 +117,7 @@ module.exports = function (src, opts) {
 
     function lookup (node) {
         for (var p = node; p; p = p.parent) {
-            if (isFunction(p) || p.type === 'Program') {
+            if (isScope(p) || p.type === 'Program') {
                 var id = getScope(p);
                 if (locals[id][node.name]) {
                     return id;
@@ -126,7 +130,7 @@ module.exports = function (src, opts) {
     function getScope (node) {
         for (
             var p = node;
-            !isFunction(p) && p.type !== 'Program';
+            !isScope(p) && p.type !== 'Program';
             p = p.parent
         );
         var id = idOf(p);
@@ -136,8 +140,8 @@ module.exports = function (src, opts) {
 
 };
 
-function isFunction (x) {
-    return x.type === 'FunctionDeclaration' || x.type === 'FunctionExpression';
+function isScope (x) {
+    return x.type === 'FunctionDeclaration' || x.type === 'FunctionExpression' || x.type === 'ClassMethod';
 }
 
 function idOf (node) {
