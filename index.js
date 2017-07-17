@@ -1,11 +1,13 @@
-var astw = require('astw');
+var astw = require('@zdychacek/astw');
 
-module.exports = function (src) {
+module.exports = function (src, opts) {
     var locals = {};
     var implicit = {};
     var exported = {};
     var implicitProps = {};
-    
+
+    if (!opts) opts = {};
+
     if (typeof src === 'string') {
         src = String(src).replace(/^#![^\n]*\n/, '');
     }
@@ -13,8 +15,8 @@ module.exports = function (src) {
     && typeof src.copy === 'function' && typeof src.toString === 'function') {
         src = src.toString('utf8');
     }
-    var walk = astw(src);
-    
+    var walk = astw(src, opts);
+
     walk(function (node) {
         if (node.type === 'VariableDeclaration') {
             // take off the leading `var `
@@ -39,19 +41,24 @@ module.exports = function (src) {
             }
         }
     });
-    
+
     walk(function (node) {
-        if (node.type === 'Identifier'
-        && lookup(node) === undefined) {
-            if (node.parent.type === 'Property'
-            && node.parent.key === node) return;
-            if (node.parent.type === 'MemberExpression'
-            && node.parent.property === node) return;
+        if (node.type === 'Identifier' && lookup(node) === undefined) {
+            if (
+                (node.parent.type === 'ObjectProperty' || node.parent.type === 'ObjectMethod') &&
+                node.parent.key === node
+            ) return;
+
+            if (node.parent.type === 'MemberExpression' && node.parent.property === node) return;
+
             if (isFunction(node.parent)) return;
+
             if (node.parent.type === 'LabeledStatement') return;
+
             if (node.parent.type === 'ContinueStatement') return;
+
             if (node.parent.type === 'BreakStatement') return;
-         
+
             if (node.parent.type === 'AssignmentExpression') {
                 var isLeft0 = node.parent.left.type === 'MemberExpression'
                     && node.parent.left.object === node.name
@@ -63,16 +70,17 @@ module.exports = function (src) {
                     exported[node.name] = keyOf(node).length;
                 }
             }
-            if (!exported[node.name]
-            || exported[node.name] < keyOf(node).length) {
+
+            if (!exported[node.name] || exported[node.name] < keyOf(node).length) {
                 implicit[node.name] = keyOf(node).length;
+
                 if (!implicitProps[node.name]) implicitProps[node.name] = {};
+
                 if (node.parent && node.parent.type === 'MemberExpression'
-                && node.parent.property.type === 'Identifier') {
+                    && node.parent.property.type === 'Identifier') {
                     implicitProps[node.name][node.parent.property.name] = true;
                 }
-                else if (node.parent && node.parent.type === 'CallExpression'
-                && node.parent.callee === node) {
+                else if (node.parent && node.parent.type === 'CallExpression' && node.parent.callee === node) {
                     implicitProps[node.name]['()'] = true;
                 }
                 else {
@@ -81,7 +89,7 @@ module.exports = function (src) {
             }
         }
     });
-    
+
     var localScopes = {};
     var lks = objectKeys(locals);
     for (var i = 0; i < lks.length; i++) {
@@ -102,7 +110,7 @@ module.exports = function (src) {
             exported: objectKeys(exported)
         }
     };
-    
+
     function lookup (node) {
         for (var p = node; p; p = p.parent) {
             if (isFunction(p) || p.type === 'Program') {
@@ -114,7 +122,7 @@ module.exports = function (src) {
         }
         return undefined;
     }
-    
+
     function getScope (node) {
         for (
             var p = node;
@@ -125,13 +133,11 @@ module.exports = function (src) {
         if (!locals[id]) locals[id] = {};
         return id;
     }
-    
+
 };
 
 function isFunction (x) {
-    return x.type === 'FunctionDeclaration'
-        || x.type === 'FunctionExpression'
-    ;
+    return x.type === 'FunctionDeclaration' || x.type === 'FunctionExpression';
 }
 
 function idOf (node) {
@@ -148,18 +154,18 @@ function keyOf (node) {
     var p = node.parent;
     var ks = objectKeys(p);
     var kv = { keys : [], values : [], top : [] };
-    
+
     for (var i = 0; i < ks.length; i++) {
         var key = ks[i];
         kv.keys.push(key);
         kv.values.push(p[key]);
         kv.top.push(undefined);
-        
+
         if (isArray(p[key])) {
             var keys = objectKeys(p[key]);
             kv.keys.push.apply(kv.keys, keys);
             kv.values.push.apply(kv.values, p[key]);
-            
+
             var nkeys = [];
             for (var j = 0; j < keys.length; j++) nkeys.push(key);
             kv.top.push.apply(kv.top, nkeys);
