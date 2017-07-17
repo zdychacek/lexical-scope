@@ -33,9 +33,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/substack/lexical-scope.git"
+    "url": "git://github.com/zdychacek/lexical-scope.git"
   },
-  "homepage": "https://github.com/substack/lexical-scope",
+  "homepage": "https://github.com/zdychacek/lexical-scope",
   "keywords": [
     "ast",
     "variable",
